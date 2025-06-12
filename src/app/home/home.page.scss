@@ -25,3 +25,13 @@
 #container a {
   text-decoration: none;
 }
+
+.task-completed {
+  text-decoration: line-through;
+  color: #999;
+}
+
+ion-button {
+  --padding-start: 10px;
+  --padding-end: 10px;
+}
