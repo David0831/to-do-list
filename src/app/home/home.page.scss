@@ -35,3 +35,91 @@ ion-button {
   --padding-start: 10px;
   --padding-end: 10px;
 }
+
+.category-filter-toolbar {
+  --background: var(--ion-color-light);
+  --border-width: 0;
+  padding-bottom: 5px;
+  position: relative;
+
+  .category-scroll-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    padding: 0 10px;
+  }
+
+  .category-scroll-container {
+    white-space: nowrap;
+    flex-grow: 1;
+    height: auto;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    overflow-y: hidden;
+
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* Mejora el rendimiento del scroll en iOS */
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+  }
+
+  .category-buttons-container {
+    display: flex;
+    gap: 8px;
+    padding: 0 5px;
+  }
+
+  ion-chip {
+    cursor: pointer;
+    --border-radius: 20px;
+    --padding-start: 15px;
+    --padding-end: 15px;
+    --padding-top: 8px;
+    --padding-bottom: 8px;
+    font-size: 0.9em;
+    flex-shrink: 0;
+  }
+
+  .selected-category {
+    background: var(--ion-color-primary);
+    color: var(--ion-color-primary-contrast);
+    font-weight: bold;
+    border-color: var(--ion-color-primary);
+  }
+
+  .scroll-button {
+    --padding-start: 0;
+    --padding-end: 0;
+    --min-width: 40px;
+    --color: var(--ion-color-medium);
+    z-index: 10;
+
+    display: none;
+
+    &.left {
+      margin-right: 5px;
+    }
+    &.right {
+      margin-left: 5px;
+    }
+  }
+
+  @media (min-width: 768px) {
+    .scroll-button {
+      display: block;
+    }
+
+    .category-scroll-container {
+      &::-webkit-scrollbar {
+        display: none;
+      }
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+  }
+}

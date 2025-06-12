@@ -7,6 +7,49 @@
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
+
+  <ion-toolbar class="category-filter-toolbar">
+    <div class="category-scroll-wrapper">
+      <ion-button
+        class="scroll-button left"
+        fill="clear"
+        (click)="scrollCategories('left')"
+      >
+        <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+      </ion-button>
+
+      <div class="category-scroll-container" #categoryScrollContainer>
+        <div class="category-buttons-container">
+          <ion-chip
+            (click)="selectCategory(null)"
+            [class.selected-category]="isCategorySelected(null)"
+            color="primary"
+            outline="true"
+          >
+            <ion-label>Todas</ion-label>
+          </ion-chip>
+
+          <ion-chip
+            *ngFor="let category of categories"
+            (click)="selectCategory(category.id)"
+            [class.selected-category]="isCategorySelected(category.id)"
+            color="primary"
+            outline="true"
+          >
+            <ion-label>{{ category.name }}</ion-label>
+          </ion-chip>
+        </div>
+      </div>
+
+      <ion-button
+        class="scroll-button right"
+        fill="clear"
+        (click)="scrollCategories('right')"
+      >
+        <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+      </ion-button>
+    </div>
+  </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
@@ -27,7 +70,7 @@
       </ion-item>
 
       <ion-item
-        *ngFor="let task of tasks"
+        *ngFor="let task of filteredTasks"
         [class.task-completed]="task.completed"
       >
         <ion-checkbox
