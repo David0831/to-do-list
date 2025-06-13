@@ -1,4 +1,9 @@
-import { Component, Input, OnInit } from '@angular/core';
+import {
+  Component,
+  Input,
+  OnInit,
+  ChangeDetectionStrategy,
+} from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Task, Category } from 'src/app/models/data.interface';
@@ -10,6 +15,7 @@ import { Observable } from 'rxjs';
   templateUrl: './task-form-modal.component.html',
   styleUrls: ['./task-form-modal.component.scss'],
   standalone: false,
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class TaskFormModalComponent implements OnInit {
   @Input() task: Task | undefined;

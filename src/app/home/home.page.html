@@ -89,20 +89,7 @@
   </ion-header>
 
   <ion-list>
-    <ion-item *ngIf="filteredTasks.length === 0 && tasks.length > 0">
-      <ion-label>No hay tareas que coincidan con los filtros.</ion-label>
-    </ion-item>
-
-    <ion-item *ngIf="tasks.length === 0">
-      <ion-label>No hay tareas pendientes.</ion-label>
-    </ion-item>
-
-    <ion-item
-      *ngFor="let task of filteredTasks"
-      [class.task-completed]="task.completed"
-      class="task-item"
-      (click)="toggleTaskCompleted(task)"
-    >
+    <ion-item *ngFor="let task of filteredTasks; trackBy: trackByTaskId">
       <ion-checkbox
         class="task-checkbox"
         slot="start"
