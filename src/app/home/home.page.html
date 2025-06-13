@@ -1,20 +1,123 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Blank
-    </ion-title>
+  <ion-toolbar class="main-toolbar">
+    <div class="logo-container" slot="start">
+      <ion-img
+        class="logo"
+        src="assets/icon/favicon.png"
+        alt="Logo de la aplicación"
+      ></ion-img>
+    </div>
+    <ion-title class="header-tittle"> Mi lista de tareas </ion-title>
+    <ion-buttons slot="end">
+      <ion-button
+        (click)="openCategoriesManagementModal()"
+        class="category-button"
+      >
+        <ion-icon slot="icon-only" name="pricetags"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar class="day-filter-toolbar">
+    <div class="day-scroll-wrapper">
+      <ion-segment
+        scrollable="true"
+        (ionChange)="selectDayOfWeek($event.detail.value?.toString() ?? null)"
+        [value]="selectedDayOfWeek"
+      >
+        <ion-segment-button
+          *ngFor="let day of daysOfWeek"
+          [value]="day"
+          [class.selected-day]="isDayOfWeekSelected(day)"
+        >
+          <ion-label>{{ day }}</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
+  </ion-toolbar>
+
+  <ion-toolbar
+    *ngIf="(showCategories$ | async)"
+    class="category-filter-toolbar"
+  >
+    <div class="category-scroll-wrapper">
+      <ion-button
+        class="scroll-button left"
+        fill="clear"
+        (click)="scrollCategories('left')"
+      >
+        <ion-icon slot="icon-only" name="chevron-back-outline"></ion-icon>
+      </ion-button>
+
+      <div class="category-scroll-container" #categoryScrollContainer>
+        <div class="category-buttons-container">
+          <ion-chip
+            (click)="selectCategory(null)"
+            [class.selected-category]="isCategorySelected(null)"
+            outline="true"
+          >
+            <ion-label>Todas</ion-label>
+          </ion-chip>
+
+          <ion-chip
+            *ngFor="let category of categories"
+            (click)="selectCategory(category.id)"
+            [class.selected-category]="isCategorySelected(category.id)"
+            outline="true"
+          >
+            <ion-label>{{ category.name }}</ion-label>
+          </ion-chip>
+        </div>
+      </div>
+
+      <ion-button
+        class="scroll-button right"
+        fill="clear"
+        (click)="scrollCategories('right')"
+      >
+        <ion-icon slot="icon-only" name="chevron-forward-outline"></ion-icon>
+      </ion-button>
+    </div>
   </ion-toolbar>
 </ion-header>
 
 <ion-content [fullscreen]="true">
   <ion-header collapse="condense">
     <ion-toolbar>
-      <ion-title size="large">Blank</ion-title>
+      <ion-title size="large">Mi lista de tareas</ion-title>
     </ion-toolbar>
   </ion-header>
 
-  <div id="container">
-    <strong>Ready to create an app?</strong>
-    <p>Start with Ionic <a target="_blank" rel="noopener noreferrer" href="https://ionicframework.com/docs/components">UI Components</a></p>
-  </div>
+  <ion-list>
+    <ion-item *ngFor="let task of filteredTasks; trackBy: trackByTaskId">
+      <ion-checkbox
+        class="task-checkbox"
+        slot="start"
+        [checked]="task.completed"
+        (ionChange)="toggleTaskCompleted(task)"
+      ></ion-checkbox>
+      <ion-label>
+        <h2>{{ task.title }}</h2>
+        <p *ngIf="task.description">{{ task.description }}</p>
+        <p>
+          Categoría: {{ getCategoryName(task.categoryId) }}
+          <span *ngIf="task.dayOfWeek"> - Día: {{ task.dayOfWeek }}</span>
+        </p>
+      </ion-label>
+      <ion-buttons slot="end">
+        <ion-button color="medium" (click)="openEditTaskModal(task)">
+          <ion-icon name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="deleteTask(task.id)">
+          <ion-icon name="trash"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+
+  <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button class="add-button" (click)="openCreateTaskModal()">
+      <ion-icon class="add-button-icon" name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
 </ion-content>

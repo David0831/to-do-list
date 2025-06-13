@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Gestionar Categorías</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="closeCategoriesModal()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-list-header>
+      <ion-label>Tus Categorías</ion-label>
+    </ion-list-header>
+
+    <ion-item *ngIf="(categories$ | async)?.length === 0">
+      <ion-label>No hay categorías.</ion-label>
+    </ion-item>
+
+    <ion-item *ngFor="let category of categories$ | async">
+      <ion-label>{{ category.name }}</ion-label>
+      <ion-buttons slot="end">
+        <ion-button color="medium" (click)="openEditCategoryModal(category)">
+          <ion-icon name="create-outline"></ion-icon>
+        </ion-button>
+        <ion-button color="danger" (click)="deleteCategory(category.id)">
+          <ion-icon name="trash-outline"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-item>
+  </ion-list>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="closeCategoriesModal()"
+        >Cerrar</ion-button
+      >
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button color="primary" (click)="openCreateCategoryModal()"
+        >Crear</ion-button
+      >
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>

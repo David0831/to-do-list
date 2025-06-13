@@ -1,0 +1,48 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ title }}</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="onCancel()">
+        <ion-icon name="close-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="categoryForm">
+    <ion-item>
+      <ion-label position="floating">Nombre de la Categoría</ion-label>
+      <ion-input
+        formControlName="name"
+        placeholder="Ej: Trabajo, Personal, etc."
+        required
+      ></ion-input>
+    </ion-item>
+    <div
+      *ngIf="
+        categoryForm.get('name')?.invalid && categoryForm.get('name')?.touched
+      "
+      class="validation-error"
+    >
+      El nombre de la categoría es obligatorio.
+    </div>
+  </form>
+</ion-content>
+
+<ion-footer>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-button color="medium" (click)="onCancel()">Cancelar</ion-button>
+    </ion-buttons>
+    <ion-buttons slot="end">
+      <ion-button
+        color="primary"
+        (click)="onConfirm()"
+        [disabled]="categoryForm.invalid"
+      >
+        {{ confirmButtonText }}
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-footer>
