@@ -2,8 +2,12 @@
   <ion-toolbar>
     <ion-title> Mi lista de tareas </ion-title>
     <ion-buttons slot="end">
-      <ion-button>
-        <ion-icon slot="icon-only" name="pricetags"></ion-icon>
+      <ion-button
+        (click)="openCategoriesManagementModal()"
+        class="category-button"
+      >
+        <ion-icon name="apps-outline" slot="icon-only"></ion-icon>
+        <div class="tooltip">Categorías</div>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>

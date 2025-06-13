@@ -1,6 +1,5 @@
 #container {
   text-align: center;
-
   position: absolute;
   left: 0;
   right: 0;
@@ -16,9 +15,7 @@
 #container p {
   font-size: 16px;
   line-height: 22px;
-
   color: #8c8c8c;
-
   margin: 0;
 }
 
@@ -36,6 +33,7 @@ ion-button {
   --padding-end: 10px;
 }
 
+/* Estilos para el toolbar de categorías */
 .category-filter-toolbar {
   --background: var(--ion-color-light);
   --border-width: 0;
@@ -57,7 +55,6 @@ ion-button {
     flex-direction: row;
     align-items: center;
     overflow-y: hidden;
-
     overflow-x: auto;
     -webkit-overflow-scrolling: touch; /* Mejora el rendimiento del scroll en iOS */
 
@@ -92,13 +89,13 @@ ion-button {
     border-color: var(--ion-color-primary);
   }
 
+  /* Estilos y visibilidad de los botones de scroll */
   .scroll-button {
     --padding-start: 0;
     --padding-end: 0;
     --min-width: 40px;
     --color: var(--ion-color-medium);
     z-index: 10;
-
     display: none;
 
     &.left {
@@ -109,7 +106,9 @@ ion-button {
     }
   }
 
+  // Media query para mostrar los botones y ocultar la barra de scroll en desktop
   @media (min-width: 768px) {
+    // Desktop view
     .scroll-button {
       display: block;
     }
@@ -121,5 +120,33 @@ ion-button {
       -ms-overflow-style: none;
       scrollbar-width: none;
     }
+  }
+}
+
+/* Estilos para el botón de categorías y el tooltip */
+.category-button {
+  position: relative;
+  overflow: visible;
+
+  .tooltip {
+    position: absolute;
+    bottom: -30px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: var(--ion-color-dark);
+    color: white;
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 0.8em;
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease, bottom 0.3s ease;
+    z-index: 100;
+  }
+
+  &:hover .tooltip {
+    opacity: 1;
+    bottom: -25px;
   }
 }

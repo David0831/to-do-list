@@ -1,4 +1,3 @@
-import { Task, Category } from './../models/data.interface';
 import {
   Component,
   OnInit,
@@ -6,6 +5,11 @@ import {
   ElementRef,
   AfterViewInit,
 } from '@angular/core';
+import { Task, Category } from './../models/data.interface';
+import { ModalController } from '@ionic/angular';
+import { CategoryService } from '../services/category.service';
+import { CategoriesModalComponent } from '../components/categories-modal/categories-modal.component';
+import { Observable, Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -22,21 +26,19 @@ export class HomePage implements OnInit, AfterViewInit {
   filteredTasks: Task[] = [];
   selectedCategoryId: number | null = null;
 
-  constructor() {}
+  private categoriesSubscription!: Subscription;
+
+  constructor(
+    private modalController: ModalController, // Inyectar ModalController
+    private categoryService: CategoryService // Inyectar CategoryService
+  ) {}
 
   ngOnInit() {
-    this.categories = [
-      { id: 1, name: 'Personal' },
-      { id: 2, name: 'Trabajo' },
-      { id: 3, name: 'Estudios' },
-      { id: 4, name: 'Compras' },
-      { id: 5, name: 'Salud' },
-      { id: 6, name: 'Hogar' },
-      { id: 7, name: 'Finanzas' },
-      { id: 8, name: 'Social' },
-      { id: 9, name: 'Deportes' },
-      { id: 10, name: 'Ocio' },
-    ];
+    this.categoriesSubscription = this.categoryService.categories$.subscribe(
+      (categories) => {
+        this.categories = categories;
+      }
+    );
 
     this.tasks = [
       { id: 1, title: 'Comprar leche', completed: false, categoryId: 1 },
@@ -58,10 +60,12 @@ export class HomePage implements OnInit, AfterViewInit {
     this.filterTasks();
   }
 
-  // Asegúrate de que el DOM esté renderizado antes de intentar acceder a categoryScrollContainerRef
-  ngAfterViewInit() {
-    // Puedes realizar alguna inicialización o verificación aquí si es necesario
-    // Por ejemplo, verificar si los botones de scroll son necesarios al cargar
+  ngAfterViewInit() {}
+
+  ngOnDestroy() {
+    if (this.categoriesSubscription) {
+      this.categoriesSubscription.unsubscribe();
+    }
   }
 
   getCategoryName(categoryId: number | null): string {
@@ -69,7 +73,7 @@ export class HomePage implements OnInit, AfterViewInit {
       return 'Sin categoría';
     }
     const category = this.categories.find((cat) => cat.id === categoryId);
-    return category ? category.name : 'Desconocida';
+    return category ? category.name : 'Sin categoría';
   }
 
   toggleTaskCompleted(task: Task) {
@@ -115,5 +119,18 @@ export class HomePage implements OnInit, AfterViewInit {
         behavior: 'smooth',
       });
     }
+  }
+
+  async openCategoriesManagementModal() {
+    const modal = await this.modalController.create({
+      component: CategoriesModalComponent,
+    });
+    await modal.present();
+
+    const { data, role } = await modal.onWillDismiss();
+    console.log('Modal Categories Management cerrado', data, role);
+    // Si necesitas recargar algo al cerrar la modal principal, hazlo aquí
+    // Por ejemplo, si se eliminan categorías que ya no deben estar asignadas a tareas.
+    // Esto implicaría una lógica más compleja de reasignación o eliminación de categoryId en tareas.
   }
 }
