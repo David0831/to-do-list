@@ -12,7 +12,8 @@ import { CategoryService } from '../services/category.service';
 import { TaskService } from '../services/task.service';
 import { CategoriesModalComponent } from '../components/categories-modal/categories-modal.component';
 import { TaskFormModalComponent } from '../components/task-form-modal/task-form-modal.component';
-import { Subscription, combineLatest } from 'rxjs';
+import { Observable, Subscription, combineLatest } from 'rxjs';
+import { FeatureFlagService } from '../services/feature-flag.service';
 
 @Component({
   selector: 'app-home',
@@ -31,10 +32,13 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
 
   private combinedSubscription!: Subscription;
 
+  showCategories$: Observable<boolean> = new Observable<boolean>();
+
   constructor(
     private modalController: ModalController,
     private categoryService: CategoryService,
-    private taskService: TaskService
+    private taskService: TaskService,
+    private featureFlagService: FeatureFlagService
   ) {}
 
   ngOnInit() {
@@ -46,6 +50,8 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
       this.categories = categories;
       this.filterTasks();
     });
+
+    this.showCategories$ = this.featureFlagService.getFeatureFlag(0);
 
     this.filterTasks();
   }

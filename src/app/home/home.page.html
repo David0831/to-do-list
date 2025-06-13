@@ -6,13 +6,15 @@
         (click)="openCategoriesManagementModal()"
         class="category-button"
       >
-        <ion-icon name="apps-outline" slot="icon-only"></ion-icon>
-        <div class="tooltip">Categorías</div>
+        <ion-icon slot="icon-only" name="pricetags"></ion-icon>
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 
-  <ion-toolbar class="category-filter-toolbar">
+  <ion-toolbar
+    *ngIf="(showCategories$ | async)"
+    class="category-filter-toolbar"
+  >
     <div class="category-scroll-wrapper">
       <ion-button
         class="scroll-button left"
