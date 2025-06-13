@@ -9,4 +9,5 @@ export interface Task {
   description?: string;
   completed: boolean;
   categoryId: number | null;
+  dayOfWeek?: string;
 }

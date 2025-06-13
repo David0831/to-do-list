@@ -1,6 +1,13 @@
 <ion-header [translucent]="true">
   <ion-toolbar class="main-toolbar">
-    <ion-title> Mi lista de tareas </ion-title>
+    <div class="logo-container" slot="start">
+      <ion-img
+        class="logo"
+        src="assets/icon/favicon.png"
+        alt="Logo de la aplicación"
+      ></ion-img>
+    </div>
+    <ion-title class="header-tittle"> Mi lista de tareas </ion-title>
     <ion-buttons slot="end">
       <ion-button
         (click)="openCategoriesManagementModal()"
@@ -9,6 +16,24 @@
         <ion-icon slot="icon-only" name="pricetags"></ion-icon>
       </ion-button>
     </ion-buttons>
+  </ion-toolbar>
+
+  <ion-toolbar class="day-filter-toolbar">
+    <div class="day-scroll-wrapper">
+      <ion-segment
+        scrollable="true"
+        (ionChange)="selectDayOfWeek($event.detail.value?.toString() ?? null)"
+        [value]="selectedDayOfWeek"
+      >
+        <ion-segment-button
+          *ngFor="let day of daysOfWeek"
+          [value]="day"
+          [class.selected-day]="isDayOfWeekSelected(day)"
+        >
+          <ion-label>{{ day }}</ion-label>
+        </ion-segment-button>
+      </ion-segment>
+    </div>
   </ion-toolbar>
 
   <ion-toolbar
@@ -64,6 +89,10 @@
   </ion-header>
 
   <ion-list>
+    <ion-item *ngIf="filteredTasks.length === 0 && tasks.length > 0">
+      <ion-label>No hay tareas que coincidan con los filtros.</ion-label>
+    </ion-item>
+
     <ion-item *ngIf="tasks.length === 0">
       <ion-label>No hay tareas pendientes.</ion-label>
     </ion-item>
@@ -83,7 +112,10 @@
       <ion-label>
         <h2>{{ task.title }}</h2>
         <p *ngIf="task.description">{{ task.description }}</p>
-        <p>Categoría: {{ getCategoryName(task.categoryId) }}</p>
+        <p>
+          Categoría: {{ getCategoryName(task.categoryId) }}
+          <span *ngIf="task.dayOfWeek"> - Día: {{ task.dayOfWeek }}</span>
+        </p>
       </ion-label>
       <ion-buttons slot="end">
         <ion-button color="medium" (click)="openEditTaskModal(task)">
@@ -98,7 +130,7 @@
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
     <ion-fab-button class="add-button" (click)="openCreateTaskModal()">
-      <ion-icon color="dark" name="add"></ion-icon>
+      <ion-icon class="add-button-icon" name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>

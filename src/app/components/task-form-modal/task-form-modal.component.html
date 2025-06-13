@@ -50,6 +50,20 @@
         </ion-select-option>
       </ion-select>
     </ion-item>
+
+    <ion-item>
+      <ion-label>Día de la Semana</ion-label>
+      <ion-select
+        formControlName="dayOfWeek"
+        interface="popover"
+        placeholder="No seleccionado"
+      >
+        <ion-select-option [value]="null">No seleccionado</ion-select-option>
+        <ion-select-option *ngFor="let day of daysOfWeek" [value]="day">{{
+          day
+        }}</ion-select-option>
+      </ion-select>
+    </ion-item>
   </form>
 </ion-content>
 

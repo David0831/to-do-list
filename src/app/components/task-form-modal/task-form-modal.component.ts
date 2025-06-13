@@ -19,6 +19,16 @@ export class TaskFormModalComponent implements OnInit {
   taskForm!: FormGroup;
   categories$!: Observable<Category[]>;
 
+  daysOfWeek = [
+    'Lunes',
+    'Martes',
+    'Miércoles',
+    'Jueves',
+    'Viernes',
+    'Sábado',
+    'Domingo',
+  ];
+
   constructor(
     private modalController: ModalController,
     private categoryService: CategoryService
@@ -34,6 +44,7 @@ export class TaskFormModalComponent implements OnInit {
       ),
       description: new FormControl(this.task ? this.task.description : ''),
       categoryId: new FormControl(this.task ? this.task.categoryId : null),
+      dayOfWeek: new FormControl(this.task ? this.task.dayOfWeek : null),
     });
   }
 
@@ -50,6 +61,7 @@ export class TaskFormModalComponent implements OnInit {
         description: formValue.description,
         completed: this.task ? this.task.completed : false,
         categoryId: formValue.categoryId === '' ? null : formValue.categoryId,
+        dayOfWeek: formValue.dayOfWeek === '' ? null : formValue.dayOfWeek,
       };
       this.modalController.dismiss(result, 'confirm');
     }

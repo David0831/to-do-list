@@ -27,6 +27,16 @@
   --background: #1ce2c8;
 }
 
+.logo-container {
+  height: 60px;
+  width: 60px;
+  margin: 10px 0px 13px 5px;
+}
+
+.header-tittle {
+  color: #121212;
+}
+
 .task-completed {
   text-decoration: line-through;
   color: #999;
@@ -53,6 +63,25 @@ ion-button {
 
 .task-item:hover {
   --background: var(--ion-color-light);
+}
+
+/* Estilos para el toolbar de dias */
+.selected-day {
+  --color-checked: #1ce2c8;
+}
+
+.day-filter-toolbar {
+  --background: var(--ion-color-light);
+  padding: 0 16px;
+
+  .day-scroll-wrapper {
+    overflow-x: auto;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
 }
 
 /* Estilos para el toolbar de categorías */
@@ -149,9 +178,14 @@ ion-button {
 .category-button {
   position: relative;
   overflow: visible;
+  color: #121212;
 }
 
 /* Estilo para el boton de crear tarea */
 .add-button {
   --background: #1ce2c8;
+}
+
+.add-button-icon {
+  color: #121212;
 }

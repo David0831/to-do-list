@@ -29,10 +29,22 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
   categories: Category[] = [];
   filteredTasks: Task[] = [];
   selectedCategoryId: number | null = null;
+  selectedDayOfWeek: string | null = 'Todos';
 
   private combinedSubscription!: Subscription;
 
   showCategories$: Observable<boolean> = new Observable<boolean>();
+
+  daysOfWeek = [
+    'Todos',
+    'Lunes',
+    'Martes',
+    'Miércoles',
+    'Jueves',
+    'Viernes',
+    'Sábado',
+    'Domingo',
+  ];
 
   constructor(
     private modalController: ModalController,
@@ -81,13 +93,23 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   filterTasks() {
-    if (this.selectedCategoryId === null) {
-      this.filteredTasks = [...this.tasks];
-    } else {
-      this.filteredTasks = this.tasks.filter(
+    let filtered = [...this.tasks];
+
+    // Filtro por categoría
+    if (this.selectedCategoryId !== null) {
+      filtered = filtered.filter(
         (task) => task.categoryId === this.selectedCategoryId
       );
     }
+
+    // Filtro por día de la semana
+    if (this.selectedDayOfWeek !== null && this.selectedDayOfWeek !== 'Todos') {
+      filtered = filtered.filter(
+        (task) => task.dayOfWeek === this.selectedDayOfWeek
+      );
+    }
+
+    this.filteredTasks = filtered;
   }
 
   selectCategory(categoryId: number | null) {
@@ -95,8 +117,17 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
     this.filterTasks();
   }
 
+  selectDayOfWeek(day: string | null) {
+    this.selectedDayOfWeek = day;
+    this.filterTasks();
+  }
+
   isCategorySelected(categoryId: number | null): boolean {
     return this.selectedCategoryId === categoryId;
+  }
+
+  isDayOfWeekSelected(day: string | null): boolean {
+    return this.selectedDayOfWeek === day;
   }
 
   scrollCategories(direction: 'left' | 'right') {
@@ -136,6 +167,8 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
     ) {
       this.selectedCategoryId = null;
     }
+
+    this.filterTasks();
   }
 
   async openCreateTaskModal() {
