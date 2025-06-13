@@ -23,14 +23,36 @@
   text-decoration: none;
 }
 
+.main-toolbar {
+  --background: #1ce2c8;
+}
+
 .task-completed {
   text-decoration: line-through;
   color: #999;
+  --background: #4267b171;
+}
+
+.task-completed:hover {
+  --background: #275dc971 !important;
+}
+
+.task-checkbox {
+  --checkbox-background-checked: #1ce2c8;
+}
+
+.task-checkbox::part(container) {
+  border-radius: 6px;
+  border: 2px solid #1ce2c8;
 }
 
 ion-button {
   --padding-start: 10px;
   --padding-end: 10px;
+}
+
+.task-item:hover {
+  --background: var(--ion-color-light);
 }
 
 /* Estilos para el toolbar de categorías */
@@ -83,10 +105,10 @@ ion-button {
   }
 
   .selected-category {
-    background: var(--ion-color-primary);
-    color: var(--ion-color-primary-contrast);
+    background: transparent;
+    color: #1ce2c8;
     font-weight: bold;
-    border-color: var(--ion-color-primary);
+    border-color: #1ce2c8;
   }
 
   /* Estilos y visibilidad de los botones de scroll */
@@ -127,4 +149,9 @@ ion-button {
 .category-button {
   position: relative;
   overflow: visible;
+}
+
+/* Estilo para el boton de crear tarea */
+.add-button {
+  --background: #1ce2c8;
 }

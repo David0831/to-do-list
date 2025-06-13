@@ -1,5 +1,5 @@
 <ion-header [translucent]="true">
-  <ion-toolbar>
+  <ion-toolbar class="main-toolbar">
     <ion-title> Mi lista de tareas </ion-title>
     <ion-buttons slot="end">
       <ion-button
@@ -29,7 +29,6 @@
           <ion-chip
             (click)="selectCategory(null)"
             [class.selected-category]="isCategorySelected(null)"
-            color="primary"
             outline="true"
           >
             <ion-label>Todas</ion-label>
@@ -39,7 +38,6 @@
             *ngFor="let category of categories"
             (click)="selectCategory(category.id)"
             [class.selected-category]="isCategorySelected(category.id)"
-            color="primary"
             outline="true"
           >
             <ion-label>{{ category.name }}</ion-label>
@@ -66,10 +64,6 @@
   </ion-header>
 
   <ion-list>
-    <ion-list-header>
-      <ion-label>Tareas</ion-label>
-    </ion-list-header>
-
     <ion-item *ngIf="tasks.length === 0">
       <ion-label>No hay tareas pendientes.</ion-label>
     </ion-item>
@@ -77,8 +71,11 @@
     <ion-item
       *ngFor="let task of filteredTasks"
       [class.task-completed]="task.completed"
+      class="task-item"
+      (click)="toggleTaskCompleted(task)"
     >
       <ion-checkbox
+        class="task-checkbox"
         slot="start"
         [checked]="task.completed"
         (ionChange)="toggleTaskCompleted(task)"
@@ -100,8 +97,8 @@
   </ion-list>
 
   <ion-fab vertical="bottom" horizontal="end" slot="fixed">
-    <ion-fab-button (click)="openCreateTaskModal()">
-      <ion-icon name="add"></ion-icon>
+    <ion-fab-button class="add-button" (click)="openCreateTaskModal()">
+      <ion-icon color="dark" name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
 </ion-content>
