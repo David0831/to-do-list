@@ -4,13 +4,15 @@ import {
   ViewChild,
   ElementRef,
   AfterViewInit,
+  OnDestroy,
 } from '@angular/core';
 import { Task, Category } from './../models/data.interface';
 import { ModalController } from '@ionic/angular';
 import { CategoryService } from '../services/category.service';
+import { TaskService } from '../services/task.service';
 import { CategoriesModalComponent } from '../components/categories-modal/categories-modal.component';
 import { TaskFormModalComponent } from '../components/task-form-modal/task-form-modal.component';
-import { Subscription } from 'rxjs';
+import { Subscription, combineLatest } from 'rxjs';
 
 @Component({
   selector: 'app-home',
@@ -18,7 +20,7 @@ import { Subscription } from 'rxjs';
   styleUrls: ['home.page.scss'],
   standalone: false,
 })
-export class HomePage implements OnInit, AfterViewInit {
+export class HomePage implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('categoryScrollContainer')
   categoryScrollContainerRef!: ElementRef<HTMLDivElement>;
 
@@ -27,86 +29,23 @@ export class HomePage implements OnInit, AfterViewInit {
   filteredTasks: Task[] = [];
   selectedCategoryId: number | null = null;
 
-  private categoriesSubscription!: Subscription;
+  private combinedSubscription!: Subscription;
 
   constructor(
     private modalController: ModalController,
-    private categoryService: CategoryService
+    private categoryService: CategoryService,
+    private taskService: TaskService
   ) {}
 
   ngOnInit() {
-    this.tasks = [
-      {
-        id: 1,
-        title: 'Comprar leche',
-        description: 'Leche entera, 1 litro',
-        completed: false,
-        categoryId: 1,
-      },
-      {
-        id: 2,
-        title: 'Terminar informe X',
-        description: 'Revisar datos y conclusiones',
-        completed: false,
-        categoryId: 2,
-      },
-      {
-        id: 3,
-        title: 'Llamar a Juan',
-        description: 'Preguntar sobre el proyecto',
-        completed: true,
-        categoryId: 1,
-      },
-      {
-        id: 4,
-        title: 'Estudiar Angular',
-        description: 'Repasar componentes y servicios',
-        completed: false,
-        categoryId: 3,
-      },
-      {
-        id: 5,
-        title: 'Pagar servicios',
-        description: 'Luz y agua',
-        completed: false,
-        categoryId: null,
-      },
-      {
-        id: 6,
-        title: 'Ir al gimnasio',
-        description: 'Rutina de brazos',
-        completed: false,
-        categoryId: 5,
-      },
-      {
-        id: 7,
-        title: 'Preparar presentación',
-        description: 'Diapositivas y guion',
-        completed: false,
-        categoryId: 2,
-      },
-      {
-        id: 8,
-        title: 'Visitar a la abuela',
-        description: 'Llevarle flores',
-        completed: false,
-        categoryId: 1,
-      },
-      {
-        id: 9,
-        title: 'Comprar bombillas',
-        description: 'LED, E27',
-        completed: false,
-        categoryId: 6,
-      },
-    ];
-
-    this.categoriesSubscription = this.categoryService.categories$.subscribe(
-      (categories) => {
-        this.categories = categories;
-        this.filterTasks();
-      }
-    );
+    this.combinedSubscription = combineLatest([
+      this.taskService.tasks$,
+      this.categoryService.categories$,
+    ]).subscribe(([tasks, categories]) => {
+      this.tasks = tasks;
+      this.categories = categories;
+      this.filterTasks();
+    });
 
     this.filterTasks();
   }
@@ -114,8 +53,8 @@ export class HomePage implements OnInit, AfterViewInit {
   ngAfterViewInit() {}
 
   ngOnDestroy() {
-    if (this.categoriesSubscription) {
-      this.categoriesSubscription.unsubscribe();
+    if (this.combinedSubscription) {
+      this.combinedSubscription.unsubscribe();
     }
   }
 
@@ -128,30 +67,11 @@ export class HomePage implements OnInit, AfterViewInit {
   }
 
   toggleTaskCompleted(task: Task) {
-    task.completed = !task.completed;
+    this.taskService.toggleTaskCompleted(task);
   }
 
   deleteTask(id: number) {
-    this.tasks = this.tasks.filter((task) => task.id !== id);
-    this.filterTasks();
-  }
-
-  addTask(newTask: Task) {
-    const newId =
-      this.tasks.length > 0 ? Math.max(...this.tasks.map((t) => t.id)) + 1 : 1;
-    newTask.id = newId;
-    this.tasks = [...this.tasks, newTask];
-    this.filterTasks();
-  }
-
-  updateTask(updatedTask: Task) {
-    const index = this.tasks.findIndex((t) => t.id === updatedTask.id);
-    if (index > -1) {
-      const newTasks = [...this.tasks];
-      newTasks[index] = updatedTask;
-      this.tasks = newTasks;
-      this.filterTasks();
-    }
+    this.taskService.deleteTask(id);
   }
 
   filterTasks() {
@@ -199,25 +119,17 @@ export class HomePage implements OnInit, AfterViewInit {
     const { data, role } = await modal.onWillDismiss();
     console.log('Modal Categories Management cerrado', data, role);
 
-    const currentCategoriesIds = this.categories.map((c) => c.id);
+    const currentCategoriesIds = this.categoryService
+      .getCategories()
+      .map((c) => c.id);
+    this.taskService.updateTasksCategoryIds(currentCategoriesIds);
+
     if (
       this.selectedCategoryId !== null &&
       !currentCategoriesIds.includes(this.selectedCategoryId)
     ) {
       this.selectedCategoryId = null;
     }
-
-    this.tasks = this.tasks.map((task) => {
-      if (
-        task.categoryId !== null &&
-        !currentCategoriesIds.includes(task.categoryId)
-      ) {
-        return { ...task, categoryId: null };
-      }
-      return task;
-    });
-
-    this.filterTasks();
   }
 
   async openCreateTaskModal() {
@@ -234,7 +146,7 @@ export class HomePage implements OnInit, AfterViewInit {
     const { data, role } = await modal.onWillDismiss();
 
     if (role === 'confirm' && data) {
-      this.addTask(data);
+      this.taskService.addTask(data);
     }
   }
 
@@ -253,7 +165,7 @@ export class HomePage implements OnInit, AfterViewInit {
     const { data, role } = await modal.onWillDismiss();
 
     if (role === 'confirm' && data) {
-      this.updateTask(data);
+      this.taskService.updateTask(data);
     }
   }
 }

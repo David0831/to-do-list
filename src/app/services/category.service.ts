@@ -2,27 +2,36 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { Category } from '../models/data.interface';
 
+const CATEGORIES_STORAGE_KEY = 'my_categories';
+
 @Injectable({
   providedIn: 'root',
 })
 export class CategoryService {
-  private _categories = new BehaviorSubject<Category[]>([
-    { id: 1, name: 'Personal' },
-    { id: 2, name: 'Trabajo' },
-    { id: 3, name: 'Estudios' },
-    { id: 4, name: 'Compras' },
-    { id: 5, name: 'Salud' },
-    { id: 6, name: 'Hogar' },
-    { id: 7, name: 'Finanzas' },
-    { id: 8, name: 'Social' },
-    { id: 9, name: 'Deportes' },
-    { id: 10, name: 'Ocio' },
-  ]);
+  private _categories = new BehaviorSubject<Category[]>([]);
 
   readonly categories$: Observable<Category[]> =
     this._categories.asObservable();
 
-  constructor() {}
+  constructor() {
+    this.loadCategories();
+  }
+
+  private loadCategories() {
+    const storedCategories = localStorage.getItem(CATEGORIES_STORAGE_KEY);
+    if (storedCategories) {
+      this._categories.next(JSON.parse(storedCategories));
+    } else {
+      this._categories.next([]);
+    }
+  }
+
+  private saveCategories() {
+    localStorage.setItem(
+      CATEGORIES_STORAGE_KEY,
+      JSON.stringify(this._categories.getValue())
+    );
+  }
 
   getCategories(): Category[] {
     return this._categories.getValue();
@@ -36,6 +45,7 @@ export class CategoryService {
         : 1;
     const newCategory: Category = { id: newId, name: categoryName };
     this._categories.next([...currentCategories, newCategory]);
+    this.saveCategories();
     return newCategory;
   }
 
@@ -48,6 +58,7 @@ export class CategoryService {
       const newCategories = [...currentCategories];
       newCategories[index] = updatedCategory;
       this._categories.next(newCategories);
+      this.saveCategories();
       return true;
     }
     return false;
@@ -58,6 +69,7 @@ export class CategoryService {
     const initialLength = currentCategories.length;
     const newCategories = currentCategories.filter((c) => c.id !== categoryId);
     this._categories.next(newCategories);
+    this.saveCategories();
     return newCategories.length < initialLength;
   }
 }

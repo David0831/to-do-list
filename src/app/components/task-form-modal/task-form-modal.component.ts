@@ -3,7 +3,7 @@ import { ModalController } from '@ionic/angular';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { Task, Category } from 'src/app/models/data.interface';
 import { CategoryService } from 'src/app/services/category.service';
-import { from, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-task-form-modal',
