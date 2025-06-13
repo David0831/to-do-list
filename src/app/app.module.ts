@@ -9,12 +9,14 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 import { CategoriesModalComponent } from './components/categories-modal/categories-modal.component';
 import { CategoryFormModalComponent } from './components/category-form-modal/category-form-modal.component';
+import { TaskFormModalComponent } from './components/task-form-modal/task-form-modal.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     CategoriesModalComponent,
     CategoryFormModalComponent,
+    TaskFormModalComponent,
   ],
   imports: [
     BrowserModule,
