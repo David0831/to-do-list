@@ -5,7 +5,6 @@ import {
   ElementRef,
   AfterViewInit,
   OnDestroy,
-  ChangeDetectionStrategy,
 } from '@angular/core';
 import { Task, Category } from './../models/data.interface';
 import { ModalController } from '@ionic/angular';
@@ -21,7 +20,6 @@ import { FeatureFlagService } from '../services/feature-flag.service';
   templateUrl: 'home.page.html',
   styleUrls: ['home.page.scss'],
   standalone: false,
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class HomePage implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('categoryScrollContainer')
@@ -78,10 +76,6 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
     }
   }
 
-  trackByTaskId(index: number, task: Task): number {
-    return task.id;
-  }
-
   getCategoryName(categoryId: number | null): string {
     if (categoryId === null) {
       return 'Sin categoría';
@@ -99,7 +93,7 @@ export class HomePage implements OnInit, AfterViewInit, OnDestroy {
   }
 
   filterTasks() {
-    let filtered = this.tasks;
+    let filtered = [...this.tasks];
 
     // Filtro por categoría
     if (this.selectedCategoryId !== null) {
